@@ -1,0 +1,17 @@
+{
+    "name": "milkwood/laravel-backupper",
+    "description": "A package giving you artisan commands to backup your application and send reports, perfect to add to your kernel schedule as cron jobs",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Philip Brechmann",
+            "email": "pb@brechmann.dk"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "psr-4": {
+       "App\\": "app/",
+       "Milkwood\\LaravelBackupper\\": "bernardino/laravel-backupper/src"
+   }
+}
