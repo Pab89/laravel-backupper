@@ -3,23 +3,25 @@
 namespace LaravelBackupper\Commands;
 
 use Illuminate\Console\Command;
-use LaravelBackupper\Classes\DatabaseBackupper;
+use LaravelBackupper\Classes\BackupDirectory;
+use LaravelBackupper\Classes\DbBackupFile;
 
-class BackupDbCommand extends Command
+
+class BackupCleanerCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'backup:db';
+    protected $signature = 'backup:cleaner';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Backup the db via mysql dump.';
+    protected $description = 'Clean up the backups delete old backups not needed anymore.';
 
     /**
      * Create a new command instance.
@@ -38,8 +40,10 @@ class BackupDbCommand extends Command
      */
     public function handle()
     {
-        $dbBackupper = new DatabaseBackupper();
-        $dbBackupper->backupDb();
-        $this->info('DB backked up');
+        
+        $directory = new BackupDirectory( DbBackupFile::getPath() );
+        $directory->cleanUp();
+        $this->info('Backups cleaned');
+
     }
 }

@@ -51,6 +51,7 @@ class LaravelBackupperServiceProvider extends ServiceProvider
     {
         $this->registerBackupDb();
         $this->registeBackupReport();
+        $this->registerBackupCleaner();
         $this->bindDbBackupEnviroment();
         $this->bindBackReporter();
     }
@@ -64,6 +65,12 @@ class LaravelBackupperServiceProvider extends ServiceProvider
     public function registeBackupReport(){
     
         $this->commands('LaravelBackupper\Commands\BackupReportCommand');
+    
+    }
+
+    public function registerBackupCleaner(){
+    
+        $this->commands('LaravelBackupper\Commands\BackupCleanerCommand');
     
     }
 
@@ -86,4 +93,5 @@ class LaravelBackupperServiceProvider extends ServiceProvider
         });
     
     }
+
 }

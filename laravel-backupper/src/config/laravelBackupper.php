@@ -4,7 +4,7 @@
 
 		'dbBackupPath' => 'storage/dbBackups/',
 		'fileTimeFormat' => 'd-m-Y_H-i-s',
-		'dbBackupFilesTokeep' => 5,
+		'backupsToKeep' => 5,
 
 	);
 

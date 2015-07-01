@@ -44,6 +44,8 @@ class BackupReportCommand extends Command
         $recipiant->name = $this->argument('name');
         $backupReporter = new BackupReporter( $recipiant );
         $backupReporter->sendBackupReport();
+        
+        $this->info('Backup report send to '.$recipiant->email);
 
     }
 }
