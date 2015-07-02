@@ -95,6 +95,12 @@
 		
 		}
 
+		public function getFileNameWithCloudPath(){
+		
+			return static::getCloudPath().$this->getFileName();
+		
+		}
+
 		public function getFileNameWithFullPath(){
 		
 			return static::getFullPath().$this->getFileName();

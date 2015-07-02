@@ -22,6 +22,12 @@
 		
 		}
 
+		public static function getCloudPath(){
+		
+			return config('laravelBackupper.cloudPrefix').static::getPath();	
+		
+		}
+
 		public static function getFileEnding(){
 		
 			return static::$fileEnding;

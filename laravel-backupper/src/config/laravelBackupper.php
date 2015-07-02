@@ -2,8 +2,9 @@
 
 	return array(
 
-		'dbBackupPath' => 'storage/dbBackups/',
+		'dbBackupPath' => '/backups/db/',
 		'fileTimeFormat' => 'd-m-Y_H-i-s',
+		'cloudPrefix' => 'milkwood',
 		'backupsToKeep' => 5,
 
 	);
