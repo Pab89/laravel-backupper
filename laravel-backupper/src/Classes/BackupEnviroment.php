@@ -2,6 +2,8 @@
 
 	namespace LaravelBackupper\Classes;
 
+	use Storage;
+
 	class BackupEnviroment{
 
 		public function createIfDontExist($path){
@@ -10,12 +12,12 @@
 
 				if( $this->pathIsAFile($path) ){
 
-					$file = fopen($path,'w');
+					$file = Storage::put($path,'');
 					return $file;
 
 				}else{
 
-					$dir = mkdir($path,0777,true);
+					$dir = Storage::makeDirectory($path,0777,true);
 					return $dir;
 
 				}

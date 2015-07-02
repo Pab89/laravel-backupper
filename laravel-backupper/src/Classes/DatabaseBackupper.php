@@ -42,7 +42,7 @@
 		protected function getMysqlDumpStatement(){
 			
 			$backupFile = new DbBackupFile;
-			return sprintf("mysqldump --user=%s --password=%s --host=%s %s > %s",$this->dbUser,$this->dbPassword,$this->dbHost,$this->dbName, $backupFile->getFileNameWithPath());
+			return sprintf("mysqldump --user=%s --password=%s --host=%s %s > %s",$this->dbUser,$this->dbPassword,$this->dbHost,$this->dbName, $backupFile->getFileNameWithFullPath());
 		
 		}
 

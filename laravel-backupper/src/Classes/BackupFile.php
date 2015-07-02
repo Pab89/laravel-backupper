@@ -2,12 +2,12 @@
 
 	namespace LaravelBackupper\Classes;
 
+	use Storage;
 	use Carbon\Carbon;
 	use LaravelBackupper\Interfaces\BackupFileInterface;
 
 	abstract class BackupFile implements BackupFileInterface{
 
-		public $file;
 		public $fileName;
 		public $fileSize;
 		public $createdAt;
@@ -17,10 +17,23 @@
 		public function __construct($fileName = false){
 			
 			if($fileName){
-				$this->fileName = $fileName;
+				$this->setFileName($fileName);
 				$this->splitFileToParts();
 			}
 			
+		}
+
+		public function setFileName($fileName){
+
+			$this->fileName = static::removePathFromFile( $fileName );
+		
+		}
+
+		public static function removePathFromFile($file){
+		
+			preg_match('/[^\/]+$/', $file, $matches);
+			return $matches[0];
+		
 		}
 
 		public static function getFileDateTimeFormat(){
@@ -76,55 +89,45 @@
 		
 		}
 
-		protected function setFileNameWithoutDateTime(){
-		
-			$this->fileNameWithoutDateTime = preg_replace('/^.*_/','',$this->fileName);
-		
-		}
-
 		public function getFileNameWithPath(){
 		
 			return static::getPath().$this->getFileName();
 		
 		}
 
+		public function getFileNameWithFullPath(){
+		
+			return static::getFullPath().$this->getFileName();
+		
+		}
+
+		protected function setFileNameWithoutDateTime(){
+		
+			$this->fileNameWithoutDateTime = preg_replace('/^.*_/','',$this->fileName);
+		
+		}
+
 		protected function setFileSize(){
 		
-			$this->fileSize = fileSize( $this->getFileNameWithPath() );
+			$this->fileSize = Storage::size( $this->getFileNameWithPath() );
 
 		}
 
 		public function getFileSizeWithUnits(){
 
-			$GbInB = 1000000000;
-			$MbInB = 1000000;
-			$KbInB = 1000;
+			$fileUnits = [ 'GB' => 1000000000, 'MB' => 1000000, 'KB' => 1000, 'B' => 1 ];
 
-			$sizeInCorrectUnit;
-			$unit;
+			foreach($fileUnits as $unit => $numberOfBytesInUnit){
 
-			if( $this->fileSize > ($GbInB/10) ){
+				// Check if the file size is bigger then 1/10 of the unit. ex. 0.1 gb
+				if( $this->fileSize > ($numberOfBytesInUnit/10) ){
 
-				$sizeInCorrectUnit = $this->fileSize / $GbInB;
-				$unit = "GB";
+					$bytesDivededWithUnit = $this->fileSize / $numberOfBytesInUnit;
+					return number_format($bytesDivededWithUnit,'2',',','.') . " " .$unit;
 
-			}else if( $this->fileSize >= ($MbInB/10) ){
+				}				
 
-				$sizeInCorrectUnit = $this->fileSize / $MbInB;
-				$unit = "Mb";
-
-			}else if( $this->fileSize >= ($KbInB/10) ){
-
-				$sizeInCorrectUnit = $this->fileSize / $KbInB;
-				$unit = "KB";
-
-			}else{
-
-				$sizeInCorrectUnit = $this->fileSize;
-				$unit = "B";
 			}
-
-			return number_format($sizeInCorrectUnit,'2',',','.') . " " .$unit;
 
 		}
 

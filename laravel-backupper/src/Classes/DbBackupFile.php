@@ -16,6 +16,12 @@
 		
 		}
 
+		public static function getFullPath(){
+		
+			return storage_path().static::getPath();
+		
+		}
+
 		public static function getFileEnding(){
 		
 			return static::$fileEnding;

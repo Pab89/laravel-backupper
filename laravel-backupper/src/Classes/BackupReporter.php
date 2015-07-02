@@ -2,6 +2,7 @@
 
 	namespace LaravelBackupper\Classes;
 
+	use Storage;
 	use LaravelBackupper\Classes\DbBackupFile;
 
 	class BackupReporter{
@@ -32,17 +33,18 @@
 
 		protected function setDbBackupFiles(){
 		
-			if( $backupDir = opendir( DbBackupFile::getPath() ) ){
+			$files = Storage::files( DbBackupFile::getPath() );
 
-				while( ($entry = readdir($backupDir)) !== false){
+			foreach($files as $file){
 
-					if( DbBackupFile::isAValidFile($entry) ){
-						$this->dbBackupFiles[] = new DbBackupFile($entry);
-					}
+				if( DbBackupFile::isAValidFile($file) ){
 
-				} 
+					$this->dbBackupFiles[] = new DbBackupFile($file);
+
+				}
 
 			}
+
 		
 		}
 

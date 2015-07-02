@@ -2,6 +2,7 @@
 
 	namespace LaravelBackupper\Classes;
 
+	use Storage;
 	use LaravelBackupper\Classes\BackupEnviroment;
 	use LaravelBackupper\Classes\DbBackupFile;
 
@@ -21,7 +22,7 @@
 
 		public function enviromentExists(){
 		
-			return file_exists( DbBackupFile::getPath().'.gitignore' );
+			return Storage::exists( DbBackupFile::getPath().'.gitignore' );
 		
 		}
 
@@ -34,11 +35,12 @@
 
 		public function createGitIgnore(){
 		
-			$fopen = $this->createIfDontExist( DbBackupFile::getPath().'.gitignore' );
-			$content = '*';
+			// $fopen = $this->createIfDontExist( DbBackupFile::getPath().'.gitignore' );
+			// $content = '*';
 
-			fwrite($fopen,$content);
-			fclose($fopen);
+			Storage::put( DbBackupFile::getPath().'.gitignore', '*' );
+			// fwrite($fopen,$content);
+			// fclose($fopen);
 		
 		}
 

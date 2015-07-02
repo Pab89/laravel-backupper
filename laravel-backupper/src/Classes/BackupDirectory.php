@@ -2,17 +2,18 @@
 
 	namespace LaravelBackupper\Classes;
 
-	use LaravelBackupper\Classes\BackupFile;	
+	use Storage;
 	use Carbon\Carbon;
+	use LaravelBackupper\Classes\BackupFile;	
 
 	class BackupDirectory{
 
-		public $entries = [];
-		public $entriesDateSorted = [];
+		public $files = [];
+		public $filesDateSorted = [];
 		public $path;
 
-		public $entriesToIgnore = ['.','..','.gitignore'];
-		public $regexStartsWithDatePattern = '/^[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}/';
+		public $filesToIgnore = ['.','..','.gitignore'];
+		public $startsWithDateRegex = '/^[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}/';
 
 		public static function getBackupsToKeep(){
 		
@@ -24,57 +25,59 @@
 		public function __construct($path){
 			
 			$this->path = $path;
-			$this->setEntryVaribles();
+			$this->setFileVaribles();
 			
 		}
 
-		public function setEntryVaribles(){
+		public function setFileVaribles(){
 		
-			$this->setEntries();
-			$this->setEntriesDateSorted();
+			$this->setFiles();
+			$this->setFilesDateSorted();
 		
 		}
 
-		public function setEntries(){
+		public function setFiles(){
 
-			$this->entries = [];
-		
-			$dh = opendir( $this->path );
+			$this->files = [];
 
-			while( ( $entry = readdir($dh) ) !== false ){
-				
-				if( ! in_array($entry, $this->entriesToIgnore) ){
-					$this->entries[] = $entry;
+			$files = Storage::files( $this->path );
+
+			foreach($files as $file){
+
+				if( ! in_array($file, $this->filesToIgnore) ){
+
+					$this->files[] = BackupFile::removePathFromFile($file);
+
 				}
 
 			}
 		
 		}
 
-		public function setEntriesDateSorted(){
+		public function setFilesDateSorted(){
 
-			$this->entriesDateSorted = [];
+			$this->filesDateSorted = [];
 		
-			foreach( $this->entries as $entry ){
+			foreach( $this->files as $File ){
 
-				if( preg_match( $this->regexStartsWithDatePattern , $entry) ){
+				if( preg_match( $this->startsWithDateRegex , $File) ){
 
-					$this->entriesDateSorted[] = $entry;
+					$this->filesDateSorted[] = $File;
 
 				}
 
 			}
 
-			usort( $this->entriesDateSorted, array($this,'startDateSorter') );
+			usort( $this->filesDateSorted, array($this,'startDateSorter') );
 		
 		}
 
 		public function startDateSorter($a, $b){
 		
-			preg_match($this->regexStartsWithDatePattern, $a, $matches);
+			preg_match($this->startsWithDateRegex, $a, $matches);
 			$aDate = $matches[0];
 
-			preg_match($this->regexStartsWithDatePattern, $b, $matches);
+			preg_match($this->startsWithDateRegex, $b, $matches);
 			$bDate = $matches[0];
 
 			$aTimestamp = Carbon::createFromFormat( BackupFile::getFileDateTimeFormat() , $aDate)->timestamp;
@@ -90,15 +93,14 @@
 
 		public function cleanUp(){
 		
-			$numberOfOldBackupsToDelete = count( $this->entriesDateSorted ) - static::getBackupsToKeep();
+			$numberOfOldBackupsToDelete = count( $this->filesDateSorted ) - static::getBackupsToKeep();
+			$backupsToDelete = array_slice($this->filesDateSorted, 0, $numberOfOldBackupsToDelete);
 
-			for( $i = 0; $i < $numberOfOldBackupsToDelete; $i++ ){
-
-				unlink( $this->path . $this->entriesDateSorted[$i] );
-
+			foreach($backupsToDelete as $backupToDelete){
+				Storage::delete( $this->path.$backupToDelete );
 			}
 
-			$this->setEntryVaribles();
+			$this->setFileVaribles();
 		
 		}
 
