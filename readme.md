@@ -40,3 +40,27 @@ Set up amazone s3 credencials
     'bucket' => 'XXX',
 ]
 ```
+
+# Use
+
+### Commands
+
+You have access to the following commands
+
+#### 1: backup:db
+Backs up your database both locally in your storage folder and remotely to you s3
+```
+php artisan backup:db
+```
+
+#### 2: backup:cleaner
+Cleans up your backups both locally and remotely so that you don't keep out of date backups
+```
+php artisan backup:cleaner
+```
+
+#### 3: backup:report
+Sends out a report with the current backup files, so you can check everything has run as supposed
+```
+php artisan backup:report "receiver email" "receiver name"
+```
