@@ -1,10 +1,10 @@
 <?php
 
-	namespace LaravelBackupper\Classes;
+	namespace Milkwood\LaravelBackupper\Classes;
 
 	use Storage;
 	use Carbon\Carbon;
-	use LaravelBackupper\Classes\BackupFile;	
+	use Milkwood\LaravelBackupper\Classes\BackupFile;	
 
 	class BackupDirectory{
 

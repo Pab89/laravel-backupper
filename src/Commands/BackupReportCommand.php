@@ -1,9 +1,9 @@
 <?php
 
-namespace LaravelBackupper\Commands;
+namespace Milkwood\LaravelBackupper\Commands;
 
 use Illuminate\Console\Command;
-use LaravelBackupper\Classes\BackupReporter;
+use Milkwood\LaravelBackupper\Classes\BackupReporter;
 
 class BackupReportCommand extends Command
 {

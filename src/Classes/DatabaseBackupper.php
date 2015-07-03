@@ -1,10 +1,10 @@
 <?php
 
-	namespace LaravelBackupper\Classes;
+	namespace Milkwood\LaravelBackupper\Classes;
 
 	use Storage;
 	use Carbon\Carbon;
-	use LaravelBackupper\Classes\DbBackupFile;
+	use Milkwood\LaravelBackupper\Classes\DbBackupFile;
 
 	class DatabaseBackupper{
 

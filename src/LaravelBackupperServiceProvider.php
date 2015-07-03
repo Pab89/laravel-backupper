@@ -1,10 +1,10 @@
 <?php
 
-namespace LaravelBackupper;
+namespace Milkwood\LaravelBackupper;
 
 use Illuminate\Support\ServiceProvider;
-use LaravelBackupper\Classes\DbBackupEnviroment;
-use LaravelBackupper\Classes\BackupReporter;
+use Milkwood\LaravelBackupper\Classes\DbBackupEnviroment;
+use Milkwood\LaravelBackupper\Classes\BackupReporter;
 
 class LaravelBackupperServiceProvider extends ServiceProvider
 {
@@ -58,19 +58,19 @@ class LaravelBackupperServiceProvider extends ServiceProvider
 
     public function registerBackupDb(){
     
-        $this->commands('LaravelBackupper\Commands\BackupDbCommand');
+        $this->commands('Milkwood\LaravelBackupper\Commands\BackupDbCommand');
     
     }
 
     public function registeBackupReport(){
     
-        $this->commands('LaravelBackupper\Commands\BackupReportCommand');
+        $this->commands('Milkwood\LaravelBackupper\Commands\BackupReportCommand');
     
     }
 
     public function registerBackupCleaner(){
     
-        $this->commands('LaravelBackupper\Commands\BackupCleanerCommand');
+        $this->commands('Milkwood\LaravelBackupper\Commands\BackupCleanerCommand');
     
     }
 

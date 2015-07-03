@@ -1,10 +1,10 @@
 <?php
 
-	namespace LaravelBackupper\Classes;
+	namespace Milkwood\LaravelBackupper\Classes;
 
 	use Storage;
 	use Carbon\Carbon;
-	use LaravelBackupper\Interfaces\BackupFileInterface;
+	use Milkwood\LaravelBackupper\Interfaces\BackupFileInterface;
 
 	abstract class BackupFile implements BackupFileInterface{
 

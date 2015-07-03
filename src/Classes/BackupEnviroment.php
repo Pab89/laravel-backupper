@@ -1,6 +1,6 @@
 <?php
 
-	namespace LaravelBackupper\Classes;
+	namespace Milkwood\LaravelBackupper\Classes;
 
 	use Storage;
 

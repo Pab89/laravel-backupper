@@ -1,9 +1,9 @@
 <?php
 
-namespace LaravelBackupper\Commands;
+namespace Milkwood\LaravelBackupper\Commands;
 
 use Illuminate\Console\Command;
-use LaravelBackupper\Classes\DatabaseBackupper;
+use Milkwood\LaravelBackupper\Classes\DatabaseBackupper;
 
 class BackupDbCommand extends Command
 {

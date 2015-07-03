@@ -1,6 +1,6 @@
 <?php
 
-	namespace LaravelBackupper\Interfaces;
+	namespace Milkwood\LaravelBackupper\Interfaces;
 
 	interface BackupFileInterface{
 

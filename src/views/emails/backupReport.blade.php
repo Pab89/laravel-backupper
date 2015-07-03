@@ -36,8 +36,8 @@
 
 				<tr>
 					<td>{{ $dbBackupFile->fileNameWithoutDateTime }}</td>
-					<td>{{ $dbBackupFile->createdAt->format( LaravelBackupper\Classes\dbBackupFile::getFileDateFormat() ) }}</td>
-					<td>{{ $dbBackupFile->createdAt->format( LaravelBackupper\Classes\dbBackupFile::getFileTimeFormat() ) }}</td>
+					<td>{{ $dbBackupFile->createdAt->format( Milkwood\LaravelBackupper\Classes\dbBackupFile::getFileDateFormat() ) }}</td>
+					<td>{{ $dbBackupFile->createdAt->format( Milkwood\LaravelBackupper\Classes\dbBackupFile::getFileTimeFormat() ) }}</td>
 					<td>{{ $dbBackupFile->getFileSizeWithUnits() }}</td>
 					<td>{{ $dbBackupFile->existsInCloud() }}</td>
 				</tr>

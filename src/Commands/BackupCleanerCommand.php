@@ -1,10 +1,10 @@
 <?php
 
-namespace LaravelBackupper\Commands;
+namespace Milkwood\LaravelBackupper\Commands;
 
 use Illuminate\Console\Command;
-use LaravelBackupper\Classes\BackupDirectory;
-use LaravelBackupper\Classes\DbBackupFile;
+use Milkwood\LaravelBackupper\Classes\BackupDirectory;
+use Milkwood\LaravelBackupper\Classes\DbBackupFile;
 
 
 class BackupCleanerCommand extends Command

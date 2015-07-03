@@ -1,6 +1,6 @@
 <?php
 
-	namespace LaravelBackupper\Facades;
+	namespace Milkwood\LaravelBackupper\Facades;
 
 	use Illuminate\Support\Facades\Facade;
 
