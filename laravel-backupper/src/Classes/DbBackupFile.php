@@ -24,7 +24,7 @@
 
 		public static function getCloudPath(){
 		
-			return config('laravelBackupper.cloudPrefix').static::getPath();	
+			return config('laravelBackupper.projectName').static::getPath();	
 		
 		}
 

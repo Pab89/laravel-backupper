@@ -43,6 +43,10 @@ class BackupCleanerCommand extends Command
         
         $backupDirectory = new BackupDirectory( DbBackupFile::getPath() );
         $backupDirectory->cleanUp();
+
+        $backupDirectory = new BackupDirectory( DbBackupFile::getCloudPath(), 's3' );
+        $backupDirectory->cleanUp();
+
         $this->info('Backups cleaned');
 
     }

@@ -22,8 +22,9 @@
 		}
 
 
-		public function __construct($path){
-			
+		public function __construct($path, $disk = 'local'){
+
+			$this->disk = Storage::disk($disk);
 			$this->path = $path;
 			$this->setFileVaribles();
 			
@@ -40,7 +41,7 @@
 
 			$this->files = [];
 
-			$files = Storage::files( $this->path );
+			$files = $this->disk->files( $this->path );
 
 			foreach($files as $file){
 
@@ -97,7 +98,7 @@
 			$backupsToDelete = array_slice($this->filesDateSorted, 0, $numberOfOldBackupsToDelete);
 
 			foreach($backupsToDelete as $backupToDelete){
-				Storage::delete( $this->path.$backupToDelete );
+				$this->disk->delete( $this->path.$backupToDelete );
 			}
 
 			$this->setFileVaribles();

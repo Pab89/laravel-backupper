@@ -18,7 +18,7 @@
 	</head>
 	<body>
 		
-		Email report for: {{ base_path() }}
+		Local email report for: {{ base_path() }}
 
 		<table>
 
@@ -26,20 +26,20 @@
 
 			<tr>
 				<th>Filnavn</th>
-				<th>Fra i dag</th>
 				<th>Dato</th>
 				<th>Tidspunkt</th>
 				<th>Størrelse</th>
+				<th>Cloud</th>
 			</tr>
 
 			@foreach($dbBackupFiles as $dbBackupFile)
 
 				<tr>
 					<td>{{ $dbBackupFile->fileNameWithoutDateTime }}</td>
-					<td>{{ $dbBackupFile->createdAt->diffForHumans() }}</td>
 					<td>{{ $dbBackupFile->createdAt->format( LaravelBackupper\Classes\dbBackupFile::getFileDateFormat() ) }}</td>
 					<td>{{ $dbBackupFile->createdAt->format( LaravelBackupper\Classes\dbBackupFile::getFileTimeFormat() ) }}</td>
 					<td>{{ $dbBackupFile->getFileSizeWithUnits() }}</td>
+					<td>{{ $dbBackupFile->existsInCloud() }}</td>
 				</tr>
 
 			@endforeach

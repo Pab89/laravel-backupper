@@ -26,12 +26,12 @@
 
 		public function createBackupReport(){
 		
-			$this->setDbBackupFiles();
+			$this->setdbBackupFiles();
 			$this->sendTheReport();
 		
 		}
 
-		protected function setDbBackupFiles(){
+		protected function setdbBackupFiles(){
 		
 			$files = Storage::files( DbBackupFile::getPath() );
 
@@ -50,11 +50,18 @@
 
 		protected function sendTheReport(){
 		
-			\Mail::send('laravelBackupper::emails.backupReport',
-						['dbBackupFiles' => $this->dbBackupFiles],
+			\Mail::send('laravelBackupper::emails.backupReport',[
+						'dbBackupFiles' => $this->dbBackupFiles
+						],
 						function($message){
-							$message->to( $this->recipiant->email, $this->recipiant->name )->subject('Backup report');
+							$message->to( $this->recipiant->email, $this->recipiant->name )->subject( $this->getSubject() );
 						});
+		
+		}
+
+		protected function getSubject(){
+		
+			return config('laravelBackupper.projectName').' backup report';
 		
 		}
 

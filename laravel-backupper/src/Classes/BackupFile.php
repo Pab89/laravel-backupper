@@ -14,6 +14,8 @@
 		public $fileNameWithoutDateTime;
 		public $fileNameWithPath;
 
+		public $disk;
+
 		public function __construct($fileName = false){
 			
 			if($fileName){
@@ -142,6 +144,12 @@
 			$nowFormatted = Carbon::now()->format( static::getFileDateTimeFormat() );
 			return $nowFormatted;
 
+		}
+
+		public function existsInCloud(){
+		
+			return Storage::disk('s3')->exists( $this->getFileNameWithCloudPath() );
+		
 		}
 
 

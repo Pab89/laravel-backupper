@@ -5,7 +5,8 @@
 		'dbBackupPath' => '/backups/db/',
 		'fileTimeFormat' => 'd-m-Y_H-i-s',
 		'cloudPrefix' => 'milkwood',
-		'backupsToKeep' => 5,
+		'projectName' => 'Milkwood',
+		'backupsToKeep' => 30,
 
 	);
 
