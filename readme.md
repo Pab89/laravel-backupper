@@ -1,20 +1,44 @@
 # Installation
 
-###Step 1
+### Step 1:
 
-Add service provider to config/app.php
+Add the serviceprovider class to config/app.php
 
-''Milkwood\LaravelBackupper\LaravelBackupperServiceProvider.php''
+```
+'providers' => [ Milkwood\LaravelBackupper\LaravelBackupperServiceProvider::class ]
+```
 
-###Step 2
+### Step 2:
 
-Add facade to config/app.php
+Add the DbBackupEnviroment facade to config/app.php
+
+```
 Milkwood\LaravelBackupper\Facades\DbBackupEnviroment
+```
+'aliases' => [ 'DbBackupEnviroment' => Milkwood\LaravelBackupper\Facades\DbBackupEnviroment::class ]
+```
 
 ###Step 3
-Change filesystem config local path to just storage not /app
+
+Remove the app path in the local driver root path in config/filesystem.php
+
+```
+'local' => [
+    'driver' => 'local',
+    'root'   => storage_path(),
+]
+```
 
 ###Step 4
-Add s3 credencials
+Set up amazone s3 credencials
 
-php artisan vendor:publish(Both config and view) <br>
+
+```
+'s3' => [
+    'driver' => 's3',
+    'key'    => 'XXX',
+    'secret' => 'XXX',
+    'region' => 'XXX',
+    'bucket' => 'XXX',
+]
+```
