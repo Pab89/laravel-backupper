@@ -18,7 +18,7 @@
 	</head>
 	<body>
 		
-		Local email report for: {{ base_path() }}
+		Email report for: {{ base_path() }}
 
 		<table>
 
