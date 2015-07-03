@@ -12,8 +12,9 @@
     "require": {
         "league/flysystem-aws-s3-v3": "^1.0@dev"
     },
-    "psr-4": {
-       "App\\": "app/",
-       "Milkwood\\LaravelBackupper\\": "src/"
-   }
+    "autoload": {
+         "psr-4": {
+            "Milkwood\\LaravelBackupper\\": "src/"
+        }
+    }
 }
