@@ -34,13 +34,8 @@
 		}
 
 		public function createGitIgnore(){
-		
-			// $fopen = $this->createIfDontExist( DbBackupFile::getPath().'.gitignore' );
-			// $content = '*';
 
 			Storage::put( DbBackupFile::getPath().'.gitignore', '*' );
-			// fwrite($fopen,$content);
-			// fclose($fopen);
 		
 		}
 

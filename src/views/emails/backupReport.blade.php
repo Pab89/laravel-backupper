@@ -18,7 +18,10 @@
 	</head>
 	<body>
 		
-		Email report for: {{ base_path() }}
+		Email report for: {{ base_path() }} <br>
+
+		Local files count: {{ $localDbBackupsCount }}<br>
+		Cloud files count: {{ $cloudDbBackupsCount }}<br>
 
 		<table>
 

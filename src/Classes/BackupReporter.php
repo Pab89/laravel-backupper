@@ -49,10 +49,15 @@
 		}
 
 		protected function sendTheReport(){
+
+			// LocalDbBackupsCount get -1 due to .gitignore file
+			$localDbBackupsCount = count( Storage::files( DbBackupFile::getPath() ) ) - 1;
+			$cloudDbBackupsCount = count( Storage::disk( config('laravelBackupper.cloudService') )->files( DbBackupFile::getCloudPath() ) );
+
+			$viewVaribles = compact('localDbBackupsCount','cloudDbBackupsCount');
+			$viewVaribles['dbBackupFiles'] = $this->dbBackupFiles;
 		
-			\Mail::send('laravelBackupper::emails.backupReport',[
-						'dbBackupFiles' => $this->dbBackupFiles
-						],
+			\Mail::send('laravelBackupper::emails.backupReport',$viewVaribles,
 						function($message){
 							$message->to( $this->recipiant->email, $this->recipiant->name )->subject( $this->getSubject() );
 						});

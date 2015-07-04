@@ -9,7 +9,6 @@
 	class BackupDirectory{
 
 		public $files = [];
-		public $filesDateSorted = [];
 		public $path;
 
 		public $filesToIgnore = ['.','..','.gitignore'];
@@ -22,9 +21,8 @@
 		}
 
 
-		public function __construct($path, $disk = 'local'){
+		public function __construct($path){
 
-			$this->disk = Storage::disk($disk);
 			$this->path = $path;
 			$this->setFileVaribles();
 			
@@ -33,7 +31,6 @@
 		public function setFileVaribles(){
 		
 			$this->setFiles();
-			$this->setFilesDateSorted();
 		
 		}
 
@@ -41,48 +38,28 @@
 
 			$this->files = [];
 
-			$files = $this->disk->files( $this->path );
+			$files = Storage::files( $this->path );
 
 			foreach($files as $file){
 
-				if( ! in_array($file, $this->filesToIgnore) ){
+				$fileWithoutPath = BackupFile::removePathFromFile( $file );
 
-					$this->files[] = BackupFile::removePathFromFile($file);
+				if( ! in_array($fileWithoutPath, $this->filesToIgnore) ){
 
-				}
-
-			}
-		
-		}
-
-		public function setFilesDateSorted(){
-
-			$this->filesDateSorted = [];
-		
-			foreach( $this->files as $File ){
-
-				if( preg_match( $this->startsWithDateRegex , $File) ){
-
-					$this->filesDateSorted[] = $File;
+					$this->files[] = BackupFile::createCorrectChildFromFileName( $file );
 
 				}
 
 			}
 
-			usort( $this->filesDateSorted, array($this,'startDateSorter') );
+			usort( $this->files, array($this,'startDateSorter') );
 		
 		}
 
 		public function startDateSorter($a, $b){
-		
-			preg_match($this->startsWithDateRegex, $a, $matches);
-			$aDate = $matches[0];
 
-			preg_match($this->startsWithDateRegex, $b, $matches);
-			$bDate = $matches[0];
-
-			$aTimestamp = Carbon::createFromFormat( BackupFile::getFileDateTimeFormat() , $aDate)->timestamp;
-			$bTimestamp = Carbon::createFromFormat( BackupFile::getFileDateTimeFormat() , $bDate)->timestamp;
+			$aTimestamp = $a->createdAt->timestamp;
+			$bTimestamp = $b->createdAt->timestamp;
 
 			if( $aTimestamp == $bTimestamp){
 				return 0;
@@ -94,11 +71,13 @@
 
 		public function cleanUp(){
 		
-			$numberOfOldBackupsToDelete = count( $this->filesDateSorted ) - static::getBackupsToKeep();
-			$backupsToDelete = array_slice($this->filesDateSorted, 0, $numberOfOldBackupsToDelete);
+			$numberOfOldBackupsToDelete = count( $this->files ) - static::getBackupsToKeep();
+			$backupsToDelete = array_slice($this->files, 0, $numberOfOldBackupsToDelete);
 
 			foreach($backupsToDelete as $backupToDelete){
-				$this->disk->delete( $this->path.$backupToDelete );
+
+				$backupToDelete->deleteLocal();
+				$backupToDelete->deleteCloud();
 			}
 
 			$this->setFileVaribles();

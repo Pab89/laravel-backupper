@@ -4,6 +4,8 @@
 
 	use Storage;
 	use Carbon\Carbon;
+	use Milkwood\LaravelBackupper\Classes\DbBackupFile;
+
 	use Milkwood\LaravelBackupper\Interfaces\BackupFileInterface;
 
 	abstract class BackupFile implements BackupFileInterface{
@@ -16,25 +18,17 @@
 
 		public $disk;
 
-		public function __construct($fileName = false){
-			
-			if($fileName){
-				$this->setFileName($fileName);
-				$this->splitFileToParts();
-			}
-			
-		}
-
-		public function setFileName($fileName){
-
-			$this->fileName = static::removePathFromFile( $fileName );
-		
-		}
-
 		public static function removePathFromFile($file){
 		
 			preg_match('/[^\/]+$/', $file, $matches);
 			return $matches[0];
+		
+		}
+
+		public static function removeFileNameFromPath($file){
+		
+			$path = preg_replace('/[^\/]+$/','',$file);
+			return $path;
 		
 		}
 
@@ -55,6 +49,31 @@
 		
 			$dateTimeExploded = explode("_", static::getFileDateTimeFormat() );
 			return $dateTimeExploded[1];
+		
+		}
+
+		public static function createCorrectChildFromFileName($fileWithPath){
+
+			if( strpos( $fileWithPath, DbBackupFile::getPath()) !== false ){
+
+				return new DbBackupFile($fileWithPath);
+
+			}
+		
+		}
+
+		public function __construct($fileName = false){
+			
+			if($fileName){
+				$this->setFileName($fileName);
+				$this->splitFileToParts();
+			}
+			
+		}
+
+		public function setFileName($fileName){
+
+			$this->fileName = static::removePathFromFile( $fileName );
 		
 		}
 
@@ -121,6 +140,18 @@
 
 		}
 
+		public function deleteLocal(){
+		
+			Storage::delete( $this->getFileNameWithPath() );
+		
+		}
+
+		public function deleteCloud(){
+
+			Storage::disk( config('laravelBackupper.cloudService') )->delete( $this->getFileNameWithCloudPath() );
+
+		}
+
 		public function getFileSizeWithUnits(){
 
 			$fileUnits = [ 'GB' => 1000000000, 'MB' => 1000000, 'KB' => 1000, 'B' => 1 ];
@@ -148,7 +179,7 @@
 
 		public function existsInCloud(){
 		
-			return Storage::disk('s3')->exists( $this->getFileNameWithCloudPath() );
+			return Storage::disk( config('laravelBackupper.cloudService') )->exists( $this->getFileNameWithCloudPath() );
 		
 		}
 

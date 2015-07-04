@@ -29,7 +29,7 @@
 		
 			\DbBackupEnviroment::prepareEnviroment();
 			$this->runMysqlDumpStatement();
-			$this->copyNewestBackupFileToS3();
+			$this->copyNewestBackupFileToCloud();
 
 		
 		}
@@ -49,10 +49,10 @@
 		
 		}
 
-		protected function copyNewestBackupFileToS3(){
+		protected function copyNewestBackupFileToCloud(){
 		
 			$localFileContents = Storage::get( $this->dbBackupFile->getFileNameWithPath() );
-			Storage::disk('s3')->put( $this->dbBackupFile->getFileNameWithCloudPath(), $localFileContents );
+			Storage::disk( config('laravelBackupper.cloudService') )->put( $this->dbBackupFile->getFileNameWithCloudPath(), $localFileContents );
 		
 		}
 

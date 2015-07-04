@@ -18,13 +18,13 @@
 
 		public static function getFullPath(){
 		
-			return storage_path().static::getPath();
+			return storage_path()."/".static::getPath();
 		
 		}
 
 		public static function getCloudPath(){
 		
-			return config('laravelBackupper.projectName').static::getPath();	
+			return config('laravelBackupper.projectName')."/".static::getPath();	
 		
 		}
 
