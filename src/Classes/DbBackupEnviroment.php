@@ -8,6 +8,8 @@
 
 	class DbBackupEnviroment extends BackupEnviroment{
 
+		public $backupFileClass = 'Milkwood\LaravelBackupper\Classes\DbBackupFile';
+
 		public function getPath(){
 		
 			$parentPath = parent::getPath();

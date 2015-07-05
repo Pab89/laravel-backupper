@@ -4,12 +4,14 @@
 
 	use Storage;
 	use Carbon\Carbon;
+	use Illuminate\Support\Collection;
 	use Milkwood\LaravelBackupper\Classes\BackupFile;	
+	use Milkwood\LaravelBackupper\Classes\BackupEnviroment;
 
 	class BackupDirectory{
 
-		public $files = [];
-		public $path;
+		public $files;
+		public $backupEnviroment;
 
 		public $filesToIgnore = ['.','..','.gitignore'];
 
@@ -20,9 +22,9 @@
 		}
 
 
-		public function __construct($path){
+		public function __construct(BackupEnviroment $backupEnviroment){
 
-			$this->path = $path;
+			$this->backupEnviroment = $backupEnviroment;
 			$this->setFileVaribles();
 			
 		}
@@ -35,50 +37,45 @@
 
 		public function setFiles(){
 
-			$this->files = [];
+			$this->files = Collection::make([]);
 
-			$files = Storage::files( $this->path );
+			$localFiles = Storage::files( $this->backupEnviroment->getPath() );
+			$cloudFiles = $this->backupEnviroment->getCloudDisk()->files( $this->backupEnviroment->getCloudPath() );
 
+			$this->addToFilesIfFileNameDoesIsNotAlreadyInFiles( $localFiles );
+			$this->addToFilesIfFileNameDoesIsNotAlreadyInFiles( $cloudFiles );
+
+			$this->files = $this->files->sortBy('createdAt') ;
+		
+		}
+
+		public function addToFilesIfFileNameDoesIsNotAlreadyInFiles( $files ){
+		
 			foreach($files as $file){
 
 				$fileWithoutPath = BackupFile::removePathFromFile( $file );
 
-				if( ! in_array($fileWithoutPath, $this->filesToIgnore) ){
+				if( ! in_array($fileWithoutPath, $this->filesToIgnore) && ! in_array( $fileWithoutPath, $this->files->lists('fileName')->toArray() ) ){
 
-					$this->files[] = BackupFile::createCorrectChildFromFileName( $file );
+					$backupFileClass = $this->backupEnviroment->backupFileClass;
+					$this->files->push( new $backupFileClass( $file ) );
 
 				}
 
 			}
-
-			usort( $this->files, array($this,'startDateSorter') );
-		
-		}
-
-		public function startDateSorter($a, $b){
-
-			$aTimestamp = $a->createdAt->timestamp;
-			$bTimestamp = $b->createdAt->timestamp;
-
-			if( $aTimestamp == $bTimestamp){
-				return 0;
-			}
-
-			return ( $aTimestamp > $bTimestamp ) ? 1 : -1;
 		
 		}
 
 		public function cleanUp(){
 		
-			$numberOfOldBackupsToDelete = count( $this->files ) - static::getBackupsToKeep();
-			$backupsToDelete = array_slice($this->files, 0, $numberOfOldBackupsToDelete);
+			$numberOfOldBackupsToDelete = $this->files->count() - static::getBackupsToKeep();
+			$backupsToDelete = $this->files->splice(0, $numberOfOldBackupsToDelete);
 
-			foreach($backupsToDelete as $backupToDelete){
+			$backupsToDelete->each( function($backupFile){
 
-				$backupToDelete->delete();
-			}
+				$backupFile->delete();
 
-			$this->setFileVaribles();
+			} );
 		
 		}
 

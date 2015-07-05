@@ -20,11 +20,6 @@
 		
 		Email report for: {{ base_path() }} <br>
 
-		Local files count: {{ $localDbBackupsCount }}<br>
-		Cloud files count: {{ $cloudDbBackupsCount }}<br>
-
-		
-
 		<table>
 
 			<caption>Db Backup Files</caption>
@@ -34,6 +29,7 @@
 				<th>Dato</th>
 				<th>Tidspunkt</th>
 				<th>Størrelse</th>
+				<th>Lokal</th>
 				<th>Cloud</th>
 			</tr>
 
@@ -44,6 +40,7 @@
 					<td>{{ $dbBackupFile->createdAt->format( Milkwood\LaravelBackupper\Classes\dbBackupFile::getFileDateFormat() ) }}</td>
 					<td>{{ $dbBackupFile->createdAt->format( Milkwood\LaravelBackupper\Classes\dbBackupFile::getFileTimeFormat() ) }}</td>
 					<td>{{ $dbBackupFile->getFileSizeWithUnits() }}</td>
+					<td>{{ $dbBackupFile->existsInLocal() }}</td>
 					<td>{{ $dbBackupFile->existsInCloud() }}</td>
 				</tr>
 

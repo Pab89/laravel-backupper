@@ -8,11 +8,11 @@
 
 	Abstract class BackupEnviroment{
 
-		public $backupDirectory;
+		protected $backupDirectory;
 
 		public function setBackupDirectory(){
 		
-			$this->backupDirectory = new BackupDirectory( $this->getPath() );
+			$this->backupDirectory = new BackupDirectory( $this );
 		
 		}
 
@@ -25,18 +25,6 @@
 			}
 
 			return $this->backupDirectory;
-		
-		}
-
-		public function getLocalFiles(){
-		
-			return $this->getBackupDirectory()->files;
-		
-		}
-
-		public function getCloudFiles(){
-		
-			return $this->getCloudDisk()->files( $this->getCloudPath() );
 		
 		}
 

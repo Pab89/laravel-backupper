@@ -9,8 +9,6 @@
 
 		public $recipiant;
 
-		public $dbBackupFiles = [];
-
 
 		public function __construct($recipiant){
 			
@@ -26,25 +24,7 @@
 
 		public function createBackupReport(){
 		
-			$this->setdbBackupFiles();
 			$this->sendTheReport();
-		
-		}
-
-		protected function setdbBackupFiles(){
-		
-			$files = Storage::files( \DbBackupEnviroment::getPath() );
-
-			foreach($files as $file){
-
-				if( DbBackupFile::isAValidFile($file) ){
-
-					$this->dbBackupFiles[] = new DbBackupFile($file);
-
-				}
-
-			}
-
 		
 		}
 
@@ -53,11 +33,8 @@
 			$localDbBackupsCount = count( \DbBackupEnviroment::getLocalFiles() );
 			$cloudDbBackupsCount = count( \DbBackupEnviroment::getCloudFiles() );
 
-			var_dump(\DbBackupEnviroment::getFilesThatOnlyExistsLocalOrInTheCloud()[0]);
-			dd( "hej" );
-
 			$viewVaribles = compact('localDbBackupsCount','cloudDbBackupsCount');
-			$viewVaribles['dbBackupFiles'] = $this->dbBackupFiles;
+			$viewVaribles['dbBackupFiles'] = \DbBackupEnviroment::getBackupDirectory()->files->toArray();
 		
 			\Mail::send('laravelBackupper::emails.backupReport',$viewVaribles,
 						function($message){

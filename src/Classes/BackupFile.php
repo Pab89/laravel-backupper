@@ -63,16 +63,6 @@
 
 		}
 
-		public static function createCorrectChildFromFileName($fileWithPath){
-
-			if( strpos( $fileWithPath, \DbBackupEnviroment::getPath()) !== false ){
-
-				return new DbBackupFile($fileWithPath);
-
-			}
-		
-		}
-
 		/**
 		***	Non-static Functions
 		**/
@@ -105,6 +95,12 @@
 		public function existsInCloud(){
 		
 			return $this->cloudDisk->exists( $this->getFileNameWithCloudPath() );
+		
+		}
+
+		public function existsInLocal(){
+		
+			return Storage::exists( $this->getFileNameWithPath() );
 		
 		}
 
@@ -157,7 +153,7 @@
 
 		protected function setFileSize(){
 		
-			$this->fileSize = Storage::size( $this->getFileNameWithPath() );
+			$this->fileSize = ( $this->existsInLocal() ) ? Storage::size( $this->getFileNameWithPath() ) : $this->cloudDisk->size( $this->getFileNameWithCloudPath() ) ;
 
 		}
 
@@ -182,7 +178,9 @@
 
 		public function deleteLocal(){
 		
-			Storage::delete( $this->getFileNameWithPath() );
+			if($this->existsInLocal() ){
+				Storage::delete( $this->getFileNameWithPath() );
+			}
 		
 		}
 
