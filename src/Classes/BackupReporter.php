@@ -52,7 +52,7 @@
 
 			// LocalDbBackupsCount get -1 due to .gitignore file
 			$localDbBackupsCount = count( Storage::files( DbBackupFile::getPath() ) ) - 1;
-			$cloudDbBackupsCount = count( BackupEnviroment::getCloudDisk()->files( DbBackupFile::getCloudPath() ) );
+			$cloudDbBackupsCount = count( \BackupEnviroment::getCloudDisk()->files( DbBackupFile::getCloudPath() ) );
 
 			$viewVaribles = compact('localDbBackupsCount','cloudDbBackupsCount');
 			$viewVaribles['dbBackupFiles'] = $this->dbBackupFiles;

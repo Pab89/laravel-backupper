@@ -52,7 +52,7 @@
 		protected function copyNewestBackupFileToCloud(){
 		
 			$localFileContents = Storage::get( $this->dbBackupFile->getFileNameWithPath() );
-			BackupEnviroment::getCloudDisk()->put( $this->dbBackupFile->getFileNameWithCloudPath(), $localFileContents );
+			\BackupEnviroment::getCloudDisk()->put( $this->dbBackupFile->getFileNameWithCloudPath(), $localFileContents );
 		
 		}
 

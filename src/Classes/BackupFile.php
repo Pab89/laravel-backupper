@@ -5,7 +5,6 @@
 	use Storage;
 	use Carbon\Carbon;
 	use Milkwood\LaravelBackupper\Classes\DbBackupFile;
-	use Milkwood\LaravelBackupper\Classes\BackupEnviroment;
 
 	use Milkwood\LaravelBackupper\Interfaces\BackupFileInterface;
 
@@ -101,7 +100,7 @@
 
 		public function existsInCloud(){
 		
-			return BackupEnviroment::getCloudDisk()->exists( $this->getFileNameWithCloudPath() );
+			return \BackupEnviroment::getCloudDisk()->exists( $this->getFileNameWithCloudPath() );
 		
 		}
 
@@ -203,7 +202,11 @@
 
 		public function deleteCloud(){
 
-			BackupEnviroment::getCloudDisk()->delete( $this->getFileNameWithCloudPath() );
+			if($this->existsInCloud()){
+
+				\BackupEnviroment::getCloudDisk()->delete( $this->getFileNameWithCloudPath() );
+				
+			}
 
 		}
 

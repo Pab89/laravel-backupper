@@ -6,7 +6,7 @@
 
 	class BackupEnviroment{
 
-		public static function getCloudDisk(){
+		public function getCloudDisk(){
 		
 			return Storage::disk( config('laravelBackupper.cloudService') );
 		

@@ -10,9 +10,10 @@ Add the serviceprovider class to config/app.php
 
 ### Step 2:
 
-Add the DbBackupEnviroment facade to config/app.php
+Add the facades to config/app.php
 
 ```
+'aliases' => [ 'BackupEnviroment' => Milkwood\LaravelBackupper\Facades\BackupEnviroment::class ],
 'aliases' => [ 'DbBackupEnviroment' => Milkwood\LaravelBackupper\Facades\DbBackupEnviroment::class ]
 ```
 
