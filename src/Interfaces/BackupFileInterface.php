@@ -6,8 +6,6 @@
 
 		public static function getFileEnding();
 
-		public static function isAValidFile($file);
-
 		public function setCloudDisk();
 
 		public function getFileNameWithPath();

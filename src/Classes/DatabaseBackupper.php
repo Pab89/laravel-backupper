@@ -45,7 +45,8 @@
 			
 			$this->dbBackupFile = new DbBackupFile;
 
-			return sprintf("mysqldump --user=%s --password=%s --host=%s %s > %s",$this->dbUser,$this->dbPassword,$this->dbHost,$this->dbName, $this->dbBackupFile->getFileNameWithFullPath());
+			return sprintf("mysqldump --user=%s --password=%s --host=%s %s > %s"
+							,$this->dbUser,$this->dbPassword,$this->dbHost,$this->dbName, $this->dbBackupFile->getFileNameWithFullPath());
 		
 		}
 

@@ -17,12 +17,6 @@
 		
 		}
 
-		public static function isAValidFile($file){
-		
-			return ( strpos($file, ".sql") !== false);
-		
-		}
-
 		public function setCloudDisk(){
 		
 			$this->cloudDisk = \DbBackupEnviroment::getCloudDisk();

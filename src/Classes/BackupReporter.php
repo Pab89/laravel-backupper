@@ -30,9 +30,6 @@
 
 		protected function sendTheReport(){
 
-			$localDbBackupsCount = count( \DbBackupEnviroment::getLocalFiles() );
-			$cloudDbBackupsCount = count( \DbBackupEnviroment::getCloudFiles() );
-
 			$viewVaribles = compact('localDbBackupsCount','cloudDbBackupsCount');
 			$viewVaribles['dbBackupFiles'] = \DbBackupEnviroment::getBackupDirectory()->files->toArray();
 		
