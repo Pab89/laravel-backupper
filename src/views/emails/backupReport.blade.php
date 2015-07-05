@@ -23,6 +23,8 @@
 		Local files count: {{ $localDbBackupsCount }}<br>
 		Cloud files count: {{ $cloudDbBackupsCount }}<br>
 
+		
+
 		<table>
 
 			<caption>Db Backup Files</caption>

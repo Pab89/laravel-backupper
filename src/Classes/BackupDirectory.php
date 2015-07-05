@@ -12,7 +12,6 @@
 		public $path;
 
 		public $filesToIgnore = ['.','..','.gitignore'];
-		public $startsWithDateRegex = '/^[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}/';
 
 		public static function getBackupsToKeep(){
 		

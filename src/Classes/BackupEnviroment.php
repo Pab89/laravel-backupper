@@ -4,7 +4,59 @@
 
 	use Storage;
 
-	class BackupEnviroment{
+	use Milkwood\LaravelBackupper\Classes\BackupDirectory;
+
+	Abstract class BackupEnviroment{
+
+		public $backupDirectory;
+
+		public function setBackupDirectory(){
+		
+			$this->backupDirectory = new BackupDirectory( $this->getPath() );
+		
+		}
+
+		public function getBackupDirectory(){
+		
+			if( $this->backupDirectory == null ){
+
+				$this->setBackupDirectory();
+
+			}
+
+			return $this->backupDirectory;
+		
+		}
+
+		public function getLocalFiles(){
+		
+			return $this->getBackupDirectory()->files;
+		
+		}
+
+		public function getCloudFiles(){
+		
+			return $this->getCloudDisk()->files( $this->getCloudPath() );
+		
+		}
+
+		public function getPath(){
+		
+			return config('laravelBackupper.backupPath');
+		
+		}
+
+		public function getFullPath(){
+		
+			return storage_path()."/".$this->getPath();
+		
+		}
+
+		public function getCloudPath(){
+		
+			return config('laravelBackupper.projectName')."/".$this->getPath();
+		
+		}
 
 		public function getCloudDisk(){
 		
@@ -40,6 +92,12 @@
 			}
 
 			return false;
+		
+		}
+
+		public function cleanUp(){
+		
+			$this->getBackupDirectory()->cleanUp();
 		
 		}
 

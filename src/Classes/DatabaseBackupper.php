@@ -29,7 +29,7 @@
 		
 			\DbBackupEnviroment::prepareEnviroment();
 			$this->runMysqlDumpStatement();
-			$this->copyNewestBackupFileToCloud();
+			$this->copyDbBackupFileToCloud();
 
 		
 		}
@@ -49,10 +49,10 @@
 		
 		}
 
-		protected function copyNewestBackupFileToCloud(){
+		protected function copyDbBackupFileToCloud(){
 		
 			$localFileContents = Storage::get( $this->dbBackupFile->getFileNameWithPath() );
-			\BackupEnviroment::getCloudDisk()->put( $this->dbBackupFile->getFileNameWithCloudPath(), $localFileContents );
+			\DbBackupEnviroment::getCloudDisk()->put( $this->dbBackupFile->getFileNameWithCloudPath(), $localFileContents );
 		
 		}
 

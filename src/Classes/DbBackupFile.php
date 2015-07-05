@@ -10,23 +10,6 @@
 
 		public static $fileEnding = '_dump.sql';
 
-		public static function getPath(){
-		
-			return config('laravelBackupper.dbBackupPath');	
-		
-		}
-
-		public static function getFullPath(){
-		
-			return storage_path()."/".static::getPath();
-		
-		}
-
-		public static function getCloudPath(){
-		
-			return config('laravelBackupper.projectName')."/".static::getPath();	
-		
-		}
 
 		public static function getFileEnding(){
 		
@@ -37,6 +20,30 @@
 		public static function isAValidFile($file){
 		
 			return ( strpos($file, ".sql") !== false);
+		
+		}
+
+		public function setCloudDisk(){
+		
+			$this->cloudDisk = \DbBackupEnviroment::getCloudDisk();
+		
+		}
+
+		public function getFileNameWithPath(){
+		
+			return \DbBackupEnviroment::getPath().$this->getFileName();
+		
+		}
+
+		public function getFileNameWithCloudPath(){
+		
+			return \DbBackupEnviroment::getCloudPath().$this->getFileName();
+		
+		}
+
+		public function getFileNameWithFullPath(){
+		
+			return \DbBackupEnviroment::getFullPath().$this->getFileName();
 		
 		}
 

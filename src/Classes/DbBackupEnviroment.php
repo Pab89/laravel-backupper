@@ -8,6 +8,13 @@
 
 	class DbBackupEnviroment extends BackupEnviroment{
 
+		public function getPath(){
+		
+			$parentPath = parent::getPath();
+			return $parentPath.config('laravelBackupper.dbBackupPath');
+		
+		}
+
 		public function prepareEnviroment(){
 		
 			if( ! $this->enviromentExists() ){
@@ -22,20 +29,20 @@
 
 		public function enviromentExists(){
 		
-			return Storage::exists( DbBackupFile::getPath().'.gitignore' );
+			return Storage::exists( $this->getPath().'.gitignore' );
 		
 		}
 
 		public function createEnviroment(){
 		
-			$this->createIfDontExist( DbBackupFile::getPath() );
+			$this->createIfDontExist( $this->getPath() );
 			$this->createGitIgnore();
 		
 		}
 
 		public function createGitIgnore(){
 
-			Storage::put( DbBackupFile::getPath().'.gitignore', '*' );
+			Storage::put( $this->getPath().'.gitignore', '*' );
 		
 		}
 

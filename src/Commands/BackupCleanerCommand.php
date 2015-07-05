@@ -40,9 +40,7 @@ class BackupCleanerCommand extends Command
      */
     public function handle()
     {
-        
-        $backupDirectory = new BackupDirectory( DbBackupFile::getPath() );
-        $backupDirectory->cleanUp();
+        \DbBackupEnviroment::cleanUp();
 
         $this->info('Backups cleaned');
 

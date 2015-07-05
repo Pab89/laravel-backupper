@@ -2,7 +2,8 @@
 
 	return array(
 
-		'dbBackupPath' => 'backups/db/',
+		'backupPath' => 'backups/',
+		'dbBackupPath' => 'db/',
 		'fileTimeFormat' => 'd-m-Y_H-i-s',
 		'projectName' => 'Milkwood',
 		'backupsToKeep' => 30,

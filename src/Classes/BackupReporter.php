@@ -33,7 +33,7 @@
 
 		protected function setdbBackupFiles(){
 		
-			$files = Storage::files( DbBackupFile::getPath() );
+			$files = Storage::files( \DbBackupEnviroment::getPath() );
 
 			foreach($files as $file){
 
@@ -50,9 +50,11 @@
 
 		protected function sendTheReport(){
 
-			// LocalDbBackupsCount get -1 due to .gitignore file
-			$localDbBackupsCount = count( Storage::files( DbBackupFile::getPath() ) ) - 1;
-			$cloudDbBackupsCount = count( \BackupEnviroment::getCloudDisk()->files( DbBackupFile::getCloudPath() ) );
+			$localDbBackupsCount = count( \DbBackupEnviroment::getLocalFiles() );
+			$cloudDbBackupsCount = count( \DbBackupEnviroment::getCloudFiles() );
+
+			var_dump(\DbBackupEnviroment::getFilesThatOnlyExistsLocalOrInTheCloud()[0]);
+			dd( "hej" );
 
 			$viewVaribles = compact('localDbBackupsCount','cloudDbBackupsCount');
 			$viewVaribles['dbBackupFiles'] = $this->dbBackupFiles;

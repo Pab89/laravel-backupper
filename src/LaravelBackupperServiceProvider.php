@@ -77,13 +77,7 @@ class LaravelBackupperServiceProvider extends ServiceProvider
 
     public function bindBackupEnviroments(){
 
-        $this->app->singleton('backupEnviroment', function ($app) {
-
-            return new DbBackupEnviroment;
-
-        });
-    
-        $this->app->singleton('dbBackupEnviroment', function ($app) {
+        $this->app->singleton('DbBackupEnviroment', function ($app) {
 
             return new DbBackupEnviroment;
 
@@ -93,7 +87,7 @@ class LaravelBackupperServiceProvider extends ServiceProvider
 
     public function bindBackReporter(){
     
-        $this->app->singleton('backupReporter', function ($app) {
+        $this->app->singleton('BackupReporter', function ($app) {
 
             return new BackupReporter;
 

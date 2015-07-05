@@ -8,7 +8,7 @@
 
 		protected static function getFacadeAccessor() {
 
-			return 'dbBackupEnviroment'; 
+			return 'DbBackupEnviroment'; 
 
 		}
 

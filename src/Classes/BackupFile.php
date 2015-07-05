@@ -4,6 +4,7 @@
 
 	use Storage;
 	use Carbon\Carbon;
+
 	use Milkwood\LaravelBackupper\Classes\DbBackupFile;
 
 	use Milkwood\LaravelBackupper\Interfaces\BackupFileInterface;
@@ -14,6 +15,8 @@
 		public $fileSize;
 		public $createdAt;
 		public $fileNameWithoutDateTime;
+
+		public $cloudDisk;
 
 		/**
 		***	Static Functions
@@ -62,7 +65,7 @@
 
 		public static function createCorrectChildFromFileName($fileWithPath){
 
-			if( strpos( $fileWithPath, DbBackupFile::getPath()) !== false ){
+			if( strpos( $fileWithPath, \DbBackupEnviroment::getPath()) !== false ){
 
 				return new DbBackupFile($fileWithPath);
 
@@ -78,6 +81,7 @@
 			
 			if($fileName){
 				$this->setFileName($fileName);
+				$this->setCloudDisk();
 				$this->splitFileToParts();
 			}
 			
@@ -100,7 +104,7 @@
 
 		public function existsInCloud(){
 		
-			return \BackupEnviroment::getCloudDisk()->exists( $this->getFileNameWithCloudPath() );
+			return $this->cloudDisk->exists( $this->getFileNameWithCloudPath() );
 		
 		}
 
@@ -115,24 +119,6 @@
 			}
 
 			return $this->fileName;
-		
-		}
-
-		public function getFileNameWithPath(){
-		
-			return static::getPath().$this->getFileName();
-		
-		}
-
-		public function getFileNameWithCloudPath(){
-		
-			return static::getCloudPath().$this->getFileName();
-		
-		}
-
-		public function getFileNameWithFullPath(){
-		
-			return static::getFullPath().$this->getFileName();
 		
 		}
 
@@ -204,7 +190,7 @@
 
 			if($this->existsInCloud()){
 
-				\BackupEnviroment::getCloudDisk()->delete( $this->getFileNameWithCloudPath() );
+				$this->cloudDisk->delete( $this->getFileNameWithCloudPath() );
 				
 			}
 
