@@ -6,6 +6,12 @@
 
 	class BackupEnviroment{
 
+		public static function getCloudDisk(){
+		
+			return Storage::disk( config('laravelBackupper.cloudService') );
+		
+		}
+
 		public function createIfDontExist($path){
 		
 			if( !file_exists( $path )){

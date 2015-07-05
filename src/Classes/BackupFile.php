@@ -5,6 +5,7 @@
 	use Storage;
 	use Carbon\Carbon;
 	use Milkwood\LaravelBackupper\Classes\DbBackupFile;
+	use Milkwood\LaravelBackupper\Classes\BackupEnviroment;
 
 	use Milkwood\LaravelBackupper\Interfaces\BackupFileInterface;
 
@@ -14,9 +15,10 @@
 		public $fileSize;
 		public $createdAt;
 		public $fileNameWithoutDateTime;
-		public $fileNameWithPath;
 
-		public $disk;
+		/**
+		***	Static Functions
+		**/
 
 		public static function removePathFromFile($file){
 		
@@ -52,6 +54,13 @@
 		
 		}
 
+		public static function getFormattedDateTime(){
+
+			$nowFormatted = Carbon::now()->format( static::getFileDateTimeFormat() );
+			return $nowFormatted;
+
+		}
+
 		public static function createCorrectChildFromFileName($fileWithPath){
 
 			if( strpos( $fileWithPath, DbBackupFile::getPath()) !== false ){
@@ -62,6 +71,10 @@
 		
 		}
 
+		/**
+		***	Non-static Functions
+		**/
+
 		public function __construct($fileName = false){
 			
 			if($fileName){
@@ -69,12 +82,6 @@
 				$this->splitFileToParts();
 			}
 			
-		}
-
-		public function setFileName($fileName){
-
-			$this->fileName = static::removePathFromFile( $fileName );
-		
 		}
 
 		public function splitFileToParts(){
@@ -85,20 +92,22 @@
 			
 		}
 
-		protected function setCreatedAt(){
-		
-			$createdAt = preg_replace('/_[^_]*$/', '', $this->fileName);
-			$createdAt = Carbon::createFromFormat( static::getFileDateTimeFormat() ,$createdAt);
-			$this->createdAt = $createdAt;
-		
-		}
-
 		protected function createFileName(){
 		
-			$nowFormatted = $this->getFormattedDateTime();
+			$nowFormatted = static::getFormattedDateTime();
 			$this->fileName = $nowFormatted.static::getFileEnding();
 		
 		}
+
+		public function existsInCloud(){
+		
+			return BackupEnviroment::getCloudDisk()->exists( $this->getFileNameWithCloudPath() );
+		
+		}
+
+		/**
+		***	Get Functions
+		**/
 
 		public function getFileName(){
 		
@@ -128,6 +137,33 @@
 		
 		}
 
+		public function getFileSizeWithUnits(){
+
+			$fileUnits = [ 'GB' => 1000000000, 'MB' => 1000000, 'KB' => 1000, 'B' => 1 ];
+
+			foreach($fileUnits as $unit => $numberOfBytesInUnit){
+
+				if( $this->fileSize > $numberOfBytesInUnit ){
+
+					$bytesDivededWithUnit = $this->fileSize / $numberOfBytesInUnit;
+					return number_format($bytesDivededWithUnit,'2',',','.') . " " .$unit;
+
+				}				
+
+			}
+
+		}
+
+		/**
+		***	Set Functions
+		**/
+
+		public function setFileName($fileName){
+
+			$this->fileName = static::removePathFromFile( $fileName );
+		
+		}
+
 		protected function setFileNameWithoutDateTime(){
 		
 			$this->fileNameWithoutDateTime = preg_replace('/^.*_/','',$this->fileName);
@@ -140,6 +176,25 @@
 
 		}
 
+		protected function setCreatedAt(){
+		
+			$createdAt = preg_replace('/_[^_]*$/', '', $this->fileName);
+			$createdAt = Carbon::createFromFormat( static::getFileDateTimeFormat() ,$createdAt);
+			$this->createdAt = $createdAt;
+		
+		}
+
+		/**
+		***	Delete functions
+		**/
+
+		public function delete(){
+		
+			$this->deleteLocal();
+			$this->deleteCloud();
+		
+		}
+
 		public function deleteLocal(){
 		
 			Storage::delete( $this->getFileNameWithPath() );
@@ -148,39 +203,8 @@
 
 		public function deleteCloud(){
 
-			Storage::disk( config('laravelBackupper.cloudService') )->delete( $this->getFileNameWithCloudPath() );
+			BackupEnviroment::getCloudDisk()->delete( $this->getFileNameWithCloudPath() );
 
-		}
-
-		public function getFileSizeWithUnits(){
-
-			$fileUnits = [ 'GB' => 1000000000, 'MB' => 1000000, 'KB' => 1000, 'B' => 1 ];
-
-			foreach($fileUnits as $unit => $numberOfBytesInUnit){
-
-				// Check if the file size is bigger then 1/10 of the unit. ex. 0.1 gb
-				if( $this->fileSize > ($numberOfBytesInUnit/10) ){
-
-					$bytesDivededWithUnit = $this->fileSize / $numberOfBytesInUnit;
-					return number_format($bytesDivededWithUnit,'2',',','.') . " " .$unit;
-
-				}				
-
-			}
-
-		}
-
-		protected function getFormattedDateTime(){
-
-			$nowFormatted = Carbon::now()->format( static::getFileDateTimeFormat() );
-			return $nowFormatted;
-
-		}
-
-		public function existsInCloud(){
-		
-			return Storage::disk( config('laravelBackupper.cloudService') )->exists( $this->getFileNameWithCloudPath() );
-		
 		}
 
 

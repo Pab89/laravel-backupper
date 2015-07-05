@@ -76,8 +76,7 @@
 
 			foreach($backupsToDelete as $backupToDelete){
 
-				$backupToDelete->deleteLocal();
-				$backupToDelete->deleteCloud();
+				$backupToDelete->delete();
 			}
 
 			$this->setFileVaribles();
