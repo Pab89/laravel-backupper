@@ -68,16 +68,17 @@
 		**/
 
 		public function __construct($fileName = false){
+
+			$this->setCloudDisk();
 			
 			if($fileName){
 				$this->setFileName($fileName);
-				$this->setCloudDisk();
 				$this->splitFileToParts();
 			}
 			
 		}
 
-		public function splitFileToParts(){
+		protected function splitFileToParts(){
 		
 			$this->setFileSize();
 			$this->setCreatedAt();
@@ -91,6 +92,17 @@
 			$this->fileName = $nowFormatted.static::getFileEnding();
 		
 		}
+
+		public function copyLocalFileToCloud(){
+		
+			$localFileContents = Storage::get( $this->getFileNameWithPath() );
+			$this->cloudDisk->put( $this->getFileNameWithCloudPath(), $localFileContents );
+		
+		}
+
+		/**
+		***	Exists Functions
+		**/
 
 		public function existsInCloud(){
 		

@@ -52,8 +52,9 @@
 
 		protected function copyDbBackupFileToCloud(){
 		
-			$localFileContents = Storage::get( $this->dbBackupFile->getFileNameWithPath() );
-			\DbBackupEnviroment::getCloudDisk()->put( $this->dbBackupFile->getFileNameWithCloudPath(), $localFileContents );
+			$this->dbBackupFile->copyLocalFileToCloud();
+			// $localFileContents = Storage::get( $this->dbBackupFile->getFileNameWithPath() );
+			// \DbBackupEnviroment::getCloudDisk()->put( $this->dbBackupFile->getFileNameWithCloudPath(), $localFileContents );
 		
 		}
 
