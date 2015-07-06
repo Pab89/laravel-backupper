@@ -3,7 +3,7 @@
 namespace Milkwood\LaravelBackupper\Commands;
 
 use Illuminate\Console\Command;
-use Milkwood\LaravelBackupper\Classes\DatabaseBackupper;
+use Milkwood\LaravelBackupper\Classes\DbBackupper;
 
 class BackupDbCommand extends Command
 {
@@ -38,7 +38,7 @@ class BackupDbCommand extends Command
      */
     public function handle()
     {
-        $dbBackupper = new DatabaseBackupper();
+        $dbBackupper = new DbBackupper();
         $dbBackupper->backupDb();
         $this->info('DB backked up');
     }

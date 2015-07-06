@@ -6,7 +6,7 @@
 	use Carbon\Carbon;
 	use Milkwood\LaravelBackupper\Classes\DbBackupFile;
 
-	class DatabaseBackupper{
+	class DbBackupper{
 
 		public $dbName;
 		public $dbHost;

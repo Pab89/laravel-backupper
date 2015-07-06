@@ -4,7 +4,7 @@
 
 	use Carbon\Carbon;
 	use Milkwood\LaravelBackupper\Classes\BackupFile;
-	use Milkwood\LaravelBackupper\Classes\DatabaseBackupper;
+	use Milkwood\LaravelBackupper\Classes\DbBackupper;
 
 	class DbBackupFile extends BackupFile{
 
