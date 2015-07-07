@@ -10,6 +10,13 @@
 
 		public $backupFileClass = 'Milkwood\LaravelBackupper\Classes\DbBackupFile';
 
+
+		public function __construct(){
+			
+			
+			$this->prepareEnviroment();
+		}
+
 		public function getPath(){
 		
 			$parentPath = parent::getPath();

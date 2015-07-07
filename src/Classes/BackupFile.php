@@ -22,7 +22,7 @@
 		***	Static Functions
 		**/
 
-		public static function removePathFromFile($file){
+		public static function removePath($file){
 		
 			preg_match('/[^\/]+$/', $file, $matches);
 			return $matches[0];
@@ -36,7 +36,7 @@
 		
 		}
 
-		public static function getFileDateTimeFormat(){
+		public static function getDateTimeFormat(){
 		
 			return config('laravelBackupper.fileTimeFormat');	
 		
@@ -44,37 +44,40 @@
 
 		public static function getFileDateFormat(){
 		
-			$dateTimeExploded = explode("_", static::getFileDateTimeFormat() );
+			$dateTimeExploded = explode("_", static::getDateTimeFormat() );
 			return $dateTimeExploded[0];
 		
 		}
 
 		public static function getFileTimeFormat(){
 		
-			$dateTimeExploded = explode("_", static::getFileDateTimeFormat() );
+			$dateTimeExploded = explode("_", static::getDateTimeFormat() );
 			return $dateTimeExploded[1];
 		
 		}
 
 		public static function getFormattedDateTime(){
 
-			$nowFormatted = Carbon::now()->format( static::getFileDateTimeFormat() );
+			$nowFormatted = Carbon::now()->format( static::getDateTimeFormat() );
 			return $nowFormatted;
 
+		}
+
+		public static function createNew(){
+		
+			return new static( static::getFormattedDateTime().static::getFileEnding() );
+		
 		}
 
 		/**
 		***	Non-static Functions
 		**/
 
-		public function __construct($fileName = false){
+		public function __construct($fileName){
 
 			$this->setCloudDisk();
-			
-			if($fileName){
-				$this->setFileName($fileName);
-				$this->splitFileToParts();
-			}
+			$this->setFileName($fileName);
+			$this->splitFileToParts();
 			
 		}
 
@@ -86,17 +89,10 @@
 			
 		}
 
-		protected function createFileName(){
-		
-			$nowFormatted = static::getFormattedDateTime();
-			$this->fileName = $nowFormatted.static::getFileEnding();
-		
-		}
 
 		public function copyLocalFileToCloud(){
 		
-			$localFileContents = Storage::get( $this->getFileNameWithPath() );
-			$this->cloudDisk->put( $this->getFileNameWithCloudPath(), $localFileContents );
+			$this->cloudDisk->put( $this->getFileNameWithCloudPath(), $this->getLocalFileContent() );
 		
 		}
 
@@ -120,11 +116,13 @@
 		***	Get Functions
 		**/
 
-		public function getFileName(){
+		public function getLocalFileContent(){
 		
-			if( strlen($this->fileName) == 0 ){
-				$this->createFileName();
-			}
+			return Storage::get( $this->getFileNameWithPath() );	
+		
+		}
+
+		public function getFileName(){
 
 			return $this->fileName;
 		
@@ -151,9 +149,9 @@
 		***	Set Functions
 		**/
 
-		public function setFileName($fileName){
+		protected function setFileName($fileName){
 
-			$this->fileName = static::removePathFromFile( $fileName );
+			$this->fileName = static::removePath( $fileName );
 		
 		}
 
@@ -172,7 +170,7 @@
 		protected function setCreatedAt(){
 		
 			$createdAt = preg_replace('/_[^_]*$/', '', $this->fileName);
-			$createdAt = Carbon::createFromFormat( static::getFileDateTimeFormat() ,$createdAt);
+			$createdAt = Carbon::createFromFormat( static::getDateTimeFormat() ,$createdAt);
 			$this->createdAt = $createdAt;
 		
 		}

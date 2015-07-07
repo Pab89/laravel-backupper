@@ -53,7 +53,7 @@
 		
 			foreach($files as $file){
 
-				$fileWithoutPath = BackupFile::removePathFromFile( $file );
+				$fileWithoutPath = BackupFile::removePath( $file );
 
 				if( ! in_array($fileWithoutPath, $this->filesToIgnore) && ! in_array( $fileWithoutPath, $this->files->lists('fileName')->toArray() ) ){
 
