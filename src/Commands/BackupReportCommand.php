@@ -7,6 +7,7 @@ use Milkwood\LaravelBackupper\Classes\BackupReporter;
 
 class BackupReportCommand extends Command
 {
+
     /**
      * The name and signature of the console command.
      *
@@ -42,7 +43,7 @@ class BackupReportCommand extends Command
         $recipiant = new \stdClass;
         $recipiant->email = $this->argument('email');
         $recipiant->name = $this->argument('name');
-        $backupReporter = new BackupReporter( $recipiant );
+        $backupReporter = app( BackupReporter::class , [ $recipiant ]);
         $backupReporter->sendBackupReport();
         
         $this->info('Backup report send to '.$recipiant->email);

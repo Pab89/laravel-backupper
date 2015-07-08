@@ -3,9 +3,12 @@
 namespace Milkwood\LaravelBackupper;
 
 use Illuminate\Support\ServiceProvider;
-use Milkwood\LaravelBackupper\Classes\BackupEnviroment;
 use Milkwood\LaravelBackupper\Classes\DbBackupEnviroment;
+use Milkwood\LaravelBackupper\Classes\DbBackupDirectory;
 use Milkwood\LaravelBackupper\Classes\BackupReporter;
+
+use Milkwood\LaravelBackupper\Interfaces\DbBackupEnviromentInterface;
+use Milkwood\LaravelBackupper\Interfaces\DbBackupDirectoryInterface;
 
 class LaravelBackupperServiceProvider extends ServiceProvider
 {
@@ -54,6 +57,7 @@ class LaravelBackupperServiceProvider extends ServiceProvider
         $this->registeBackupReport();
         $this->registerBackupCleaner();
         $this->bindBackupEnviroments();
+        $this->bindBackupDirectories();
     }
 
     public function registerBackupDb(){
@@ -76,12 +80,14 @@ class LaravelBackupperServiceProvider extends ServiceProvider
 
     public function bindBackupEnviroments(){
 
-        $this->app->singleton('DbBackupEnviroment', function ($app) {
-
-            return new DbBackupEnviroment;
-
-        });
+        $this->app->singleton(DbBackupEnviromentInterface::class, DbBackupEnviroment::class);
     
-    } 
+    }
+
+    public function bindBackupDirectories(){
+    
+        $this->app->singleton(DbBackupDirectoryInterface::class, DbBackupDirectory::class);    
+    
+    }
 
 }

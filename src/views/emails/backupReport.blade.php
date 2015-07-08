@@ -26,8 +26,7 @@
 
 			<tr>
 				<th>Filnavn</th>
-				<th>Dato</th>
-				<th>Tidspunkt</th>
+				<th>Dato/Tid</th>
 				<th>Størrelse</th>
 				<th>Lokal</th>
 				<th>Cloud</th>
@@ -37,8 +36,7 @@
 
 				<tr>
 					<td>{{ $dbBackupFile->fileNameWithoutDateTime }}</td>
-					<td>{{ $dbBackupFile->createdAt->format( Milkwood\LaravelBackupper\Classes\dbBackupFile::getFileDateFormat() ) }}</td>
-					<td>{{ $dbBackupFile->createdAt->format( Milkwood\LaravelBackupper\Classes\dbBackupFile::getFileTimeFormat() ) }}</td>
+					<td>{{ $dbBackupFile->createdAt->format( Milkwood\LaravelBackupper\Classes\dbBackupFile::getDateTimeFormat() ) }}</td>
 					<td>{{ $dbBackupFile->getFileSizeWithUnits() }}</td>
 					<td>{{ $dbBackupFile->existsInLocal() }}</td>
 					<td>{{ $dbBackupFile->existsInCloud() }}</td>

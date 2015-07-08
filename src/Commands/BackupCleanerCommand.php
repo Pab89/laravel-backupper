@@ -3,12 +3,13 @@
 namespace Milkwood\LaravelBackupper\Commands;
 
 use Illuminate\Console\Command;
-use Milkwood\LaravelBackupper\Classes\BackupDirectory;
 use Milkwood\LaravelBackupper\Classes\DbBackupFile;
-
+use Milkwood\LaravelBackupper\Interfaces\DbBackupEnviromentInterface;
 
 class BackupCleanerCommand extends Command
 {
+
+    public $dbEnviroment;
     /**
      * The name and signature of the console command.
      *
@@ -28,9 +29,10 @@ class BackupCleanerCommand extends Command
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(DbBackupEnviromentInterface $dbEnviroment)
     {
         parent::__construct();
+        $this->dbEnviroment = $dbEnviroment;
     }
 
     /**
@@ -40,7 +42,7 @@ class BackupCleanerCommand extends Command
      */
     public function handle()
     {
-        \DbBackupEnviroment::cleanUp();
+        $this->dbEnviroment->cleanUp();
 
         $this->info('Backups cleaned');
 

@@ -4,14 +4,17 @@
 
 	use Storage;
 	use Milkwood\LaravelBackupper\Classes\DbBackupFile;
+	use Milkwood\LaravelBackupper\Interfaces\DbBackupEnviromentInterface;
 
 	class BackupReporter{
 
 		public $recipiant;
+		public $dbEnviroment;
 
 
-		public function __construct($recipiant){
+		public function __construct($recipiant, DbBackupEnviromentInterface $dbEnviroment){
 			
+			$this->dbEnviroment = $dbEnviroment;
 			$this->recipiant = $recipiant;
 			
 		}
@@ -31,7 +34,7 @@
 		protected function sendTheReport(){
 
 			$viewVaribles = compact('localDbBackupsCount','cloudDbBackupsCount');
-			$viewVaribles['dbBackupFiles'] = \DbBackupEnviroment::getBackupDirectory()->files->toArray();
+			$viewVaribles['dbBackupFiles'] = $this->dbEnviroment->getBackupDirectory()->files->toArray();
 		
 			\Mail::send('laravelBackupper::emails.backupReport',$viewVaribles,
 						function($message){

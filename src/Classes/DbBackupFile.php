@@ -6,44 +6,25 @@
 	use Milkwood\LaravelBackupper\Classes\BackupFile;
 	use Milkwood\LaravelBackupper\Classes\DbBackupper;
 
+	use Milkwood\LaravelBackupper\Interfaces\DbBackupEnviromentInterface;
+
 	class DbBackupFile extends BackupFile{
 
 		public static $fileEnding = '_dump.sql';
+
+		public function __construct($fileName = false, DbBackupEnviromentInterface $enviroment){
+			
+			parent::__construct($fileName,$enviroment);
+			
+		}
 
 		public static function createNew(){
 
 			$dbBackupFile = parent::createNew();
 
-			$dbBackupFile->runMysqlDumpStatement();
-
-			$dbBackupFile->copyLocalFileToCloud();
+			$dbBackupFile->save();
 
 			return $dbBackupFile;
-		
-		}
-
-
-		public static function getFileEnding(){
-		
-			return static::$fileEnding;
-		
-		}
-
-		public function getFileNameWithPath(){
-		
-			return \DbBackupEnviroment::getPath().$this->getFileName();
-		
-		}
-
-		public function getFileNameWithCloudPath(){
-		
-			return \DbBackupEnviroment::getCloudPath().$this->getFileName();
-		
-		}
-
-		public function getFileNameWithFullPath(){
-		
-			return \DbBackupEnviroment::getFullPath().$this->getFileName();
 		
 		}
 
@@ -58,16 +39,17 @@
 		
 		}
 
-		protected function runMysqlDumpStatement(){
+		protected function save(){
 
-			exec($this->getMysqlDumpStatement());
+			$this->saveLocal();
+			$this->copyLocalFileToCloud();
 
 		}
 
-		public function setCloudDisk(){
-		
-			$this->cloudDisk = \DbBackupEnviroment::getCloudDisk();
-		
+		protected function saveLocal(){
+
+			exec($this->getMysqlDumpStatement());
+
 		}
 
 	}

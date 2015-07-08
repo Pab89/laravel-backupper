@@ -3,18 +3,27 @@
 	namespace Milkwood\LaravelBackupper\Classes;
 
 	use Storage;
-	use Milkwood\LaravelBackupper\Classes\BackupEnviroment;
+	use Milkwood\LaravelBackupper\Classes\DbBackupEnviroment;
 	use Milkwood\LaravelBackupper\Classes\DbBackupFile;
 
-	class DbBackupEnviroment extends BackupEnviroment{
+	use Milkwood\LaravelBackupper\Interfaces\DbBackupEnviromentInterface;
+	use Milkwood\LaravelBackupper\Interfaces\DbBackupDirectoryInterface;
+
+	class DbBackupEnviroment extends BackupEnviroment implements DbBackupEnviromentInterface{
 
 		public $backupFileClass = 'Milkwood\LaravelBackupper\Classes\DbBackupFile';
 
 
 		public function __construct(){
 			
-			
+			$this->setCloudDisk();
 			$this->prepareEnviroment();
+		}
+
+		public function setBackupDirectory(){
+		
+			$this->backupDirectory = app( DbBackupDirectoryInterface::class );
+		
 		}
 
 		public function getPath(){

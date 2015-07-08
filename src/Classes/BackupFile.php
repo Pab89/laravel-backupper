@@ -3,20 +3,23 @@
 	namespace Milkwood\LaravelBackupper\Classes;
 
 	use Storage;
-	use Carbon\Carbon;
 
 	use Milkwood\LaravelBackupper\Classes\DbBackupFile;
 
+	use Milkwood\LaravelBackupper\Traits\Timestampable;
+
 	use Milkwood\LaravelBackupper\Interfaces\BackupFileInterface;
+	use Milkwood\LaravelBackupper\Interfaces\BackupEnviromentInterface;
 
 	abstract class BackupFile implements BackupFileInterface{
 
+		use Timestampable;
+
 		public $fileName;
 		public $fileSize;
-		public $createdAt;
 		public $fileNameWithoutDateTime;
 
-		public $cloudDisk;
+		public $enviroment;
 
 		/**
 		***	Static Functions
@@ -24,48 +27,13 @@
 
 		public static function removePath($file){
 		
-			preg_match('/[^\/]+$/', $file, $matches);
-			return $matches[0];
+			return pathinfo($file,PATHINFO_BASENAME);
 		
-		}
-
-		public static function removeFileNameFromPath($file){
-		
-			$path = preg_replace('/[^\/]+$/','',$file);
-			return $path;
-		
-		}
-
-		public static function getDateTimeFormat(){
-		
-			return config('laravelBackupper.fileTimeFormat');	
-		
-		}
-
-		public static function getFileDateFormat(){
-		
-			$dateTimeExploded = explode("_", static::getDateTimeFormat() );
-			return $dateTimeExploded[0];
-		
-		}
-
-		public static function getFileTimeFormat(){
-		
-			$dateTimeExploded = explode("_", static::getDateTimeFormat() );
-			return $dateTimeExploded[1];
-		
-		}
-
-		public static function getFormattedDateTime(){
-
-			$nowFormatted = Carbon::now()->format( static::getDateTimeFormat() );
-			return $nowFormatted;
-
 		}
 
 		public static function createNew(){
 		
-			return new static( static::getFormattedDateTime().static::getFileEnding() );
+			return app( static::class );
 		
 		}
 
@@ -73,9 +41,9 @@
 		***	Non-static Functions
 		**/
 
-		public function __construct($fileName){
+		public function __construct($fileName = false, BackupEnviromentInterface $enviroment){
 
-			$this->setCloudDisk();
+			$this->enviroment = $enviroment;
 			$this->setFileName($fileName);
 			$this->splitFileToParts();
 			
@@ -84,7 +52,7 @@
 		protected function splitFileToParts(){
 		
 			$this->setFileSize();
-			$this->setCreatedAt();
+			$this->setCreatedAtFromFileName();
 			$this->setFileNameWithoutDateTime();
 			
 		}
@@ -92,7 +60,7 @@
 
 		public function copyLocalFileToCloud(){
 		
-			$this->cloudDisk->put( $this->getFileNameWithCloudPath(), $this->getLocalFileContent() );
+			$this->enviroment->cloudDisk->put( $this->getFileNameWithCloudPath(), $this->getLocalFileContent() );
 		
 		}
 
@@ -102,7 +70,7 @@
 
 		public function existsInCloud(){
 		
-			return $this->cloudDisk->exists( $this->getFileNameWithCloudPath() );
+			return $this->enviroment->cloudDisk->exists( $this->getFileNameWithCloudPath() );
 		
 		}
 
@@ -116,6 +84,30 @@
 		***	Get Functions
 		**/
 
+		public function getFileEnding(){
+		
+			return static::$fileEnding;
+		
+		}
+
+		public function getFileNameWithPath(){
+		
+			return $this->enviroment->getPath().$this->getFileName();
+		
+		}
+
+		public function getFileNameWithCloudPath(){
+		
+			return $this->enviroment->getCloudPath().$this->getFileName();
+		
+		}
+
+		public function getFileNameWithFullPath(){
+		
+			return $this->enviroment->getFullPath().$this->getFileName();
+		
+		}
+
 		public function getLocalFileContent(){
 		
 			return Storage::get( $this->getFileNameWithPath() );	
@@ -125,6 +117,12 @@
 		public function getFileName(){
 
 			return $this->fileName;
+
+		}
+
+		public function getNewFileName(){
+
+			return static::getNowFormattedForFiles().$this->getFileEnding();
 		
 		}
 
@@ -151,7 +149,7 @@
 
 		protected function setFileName($fileName){
 
-			$this->fileName = static::removePath( $fileName );
+			$this->fileName = ( $fileName ) ? static::removePath( $fileName ) : $this->getNewFileName();
 		
 		}
 
@@ -162,17 +160,13 @@
 		}
 
 		protected function setFileSize(){
-		
-			$this->fileSize = ( $this->existsInLocal() ) ? Storage::size( $this->getFileNameWithPath() ) : $this->cloudDisk->size( $this->getFileNameWithCloudPath() ) ;
+			
+			$size = 0;
+			$size = $this->existsInLocal() ? Storage::size( $this->getFileNameWithPath() ) : $size;
+			$size = $this->existsInCloud() ? $this->enviroment->cloudDisk->size( $this->getFileNameWithCloudPath() ) : $size;
 
-		}
+			$this->fileSize = $size;
 
-		protected function setCreatedAt(){
-		
-			$createdAt = preg_replace('/_[^_]*$/', '', $this->fileName);
-			$createdAt = Carbon::createFromFormat( static::getDateTimeFormat() ,$createdAt);
-			$this->createdAt = $createdAt;
-		
 		}
 
 		/**
@@ -198,7 +192,7 @@
 
 			if($this->existsInCloud()){
 
-				$this->cloudDisk->delete( $this->getFileNameWithCloudPath() );
+				$this->enviroment->cloudDisk->delete( $this->getFileNameWithCloudPath() );
 				
 			}
 

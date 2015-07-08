@@ -8,25 +8,26 @@
 	use Milkwood\LaravelBackupper\Classes\BackupFile;	
 	use Milkwood\LaravelBackupper\Classes\BackupEnviroment;
 
-	class BackupDirectory{
+	use Milkwood\LaravelBackupper\Interfaces\BackupEnviromentInterface;
+
+	abstract class BackupDirectory{
 
 		public $files;
-		public $backupEnviroment;
+		public $enviroment;
 
 		public $filesToIgnore = ['.','..','.gitignore'];
+
+		public function __construct(BackupEnviromentInterface $enviroment){
+
+			$this->enviroment = $enviroment;
+			$this->setFileVaribles();
+			
+		}
 
 		public static function getBackupsToKeep(){
 		
 			return config('laravelBackupper.backupsToKeep');
 		
-		}
-
-
-		public function __construct(BackupEnviroment $backupEnviroment){
-
-			$this->backupEnviroment = $backupEnviroment;
-			$this->setFileVaribles();
-			
 		}
 
 		public function setFileVaribles(){
@@ -39,26 +40,23 @@
 
 			$this->files = Collection::make([]);
 
-			$localFiles = Storage::files( $this->backupEnviroment->getPath() );
-			$cloudFiles = $this->backupEnviroment->getCloudDisk()->files( $this->backupEnviroment->getCloudPath() );
+			$localFiles = Storage::files( $this->enviroment->getPath() );
+			$cloudFiles = $this->enviroment->cloudDisk->files( $this->enviroment->getCloudPath() );
 
-			$this->addToFilesIfFileNameDoesIsNotAlreadyInFiles( $localFiles );
-			$this->addToFilesIfFileNameDoesIsNotAlreadyInFiles( $cloudFiles );
+			$this->addToFilesIfValid( $localFiles );
+			$this->addToFilesIfValid( $cloudFiles );
 
 			$this->files = $this->files->sortBy('createdAt') ;
 		
 		}
 
-		public function addToFilesIfFileNameDoesIsNotAlreadyInFiles( $files ){
+		public function addToFilesIfValid( $files ){
 		
 			foreach($files as $file){
 
-				$fileWithoutPath = BackupFile::removePath( $file );
+				if( ! $this->isFileToIgnore($file)  && ! $this->isAlreadyInFiles($file) ){
 
-				if( ! in_array($fileWithoutPath, $this->filesToIgnore) && ! in_array( $fileWithoutPath, $this->files->lists('fileName')->toArray() ) ){
-
-					$backupFileClass = $this->backupEnviroment->backupFileClass;
-					$this->files->push( new $backupFileClass( $file ) );
+					$this->files->push( app( $this->enviroment->backupFileClass, [ $file ] ) );
 
 				}
 
@@ -76,6 +74,20 @@
 				$backupFile->delete();
 
 			} );
+		
+		}
+
+		protected function isFileToIgnore($file){
+		
+			$fileWithoutPath = BackupFile::removePath( $file );
+			return in_array($fileWithoutPath, $this->filesToIgnore);
+		
+		}
+
+		protected function isAlreadyInFiles($file){
+		
+			$fileWithoutPath = BackupFile::removePath( $file );
+			return in_array( $fileWithoutPath, $this->files->lists('fileName')->toArray() );
 		
 		}
 

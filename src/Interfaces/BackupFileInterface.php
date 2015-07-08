@@ -4,9 +4,7 @@
 
 	interface BackupFileInterface{
 
-		public static function getFileEnding();
-
-		public function setCloudDisk();
+		public function getFileEnding();
 
 		public function getFileNameWithPath();
 

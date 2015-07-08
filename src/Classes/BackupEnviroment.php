@@ -4,17 +4,27 @@
 
 	use Storage;
 
-	use Milkwood\LaravelBackupper\Classes\BackupDirectory;
+	use Milkwood\LaravelBackupper\Interfaces\BackupEnviromentInterface;
 
-	Abstract class BackupEnviroment{
+	Abstract class BackupEnviroment implements BackupEnviromentInterface{
+
+		public $cloudDisk;
 
 		protected $backupDirectory;
 
-		public function setBackupDirectory(){
+		/**
+		*** Set Functions
+		**/
+
+		public function setCloudDisk(){
 		
-			$this->backupDirectory = new BackupDirectory( $this );
+			$this->cloudDisk = Storage::disk( config('laravelBackupper.cloudService') );
 		
 		}
+
+		/**
+		*** Get Functions
+		**/
 
 		public function getBackupDirectory(){
 		
@@ -46,11 +56,9 @@
 		
 		}
 
-		public function getCloudDisk(){
-		
-			return Storage::disk( config('laravelBackupper.cloudService') );
-		
-		}
+		/**
+		*** Other Functions
+		**/
 
 		public function createIfDontExist($path){
 		
