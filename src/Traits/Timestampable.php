@@ -56,6 +56,19 @@
 		
 		}
 
+		public static function getFormattedFromTimestamp($timestamp){
+		
+			return Carbon::createFromTimeStamp( $timestamp )->format( static::getDateTimeFormat() );
+
+
+		}
+
+		public static function getFormattedFromTimestampForFiles($timestamp){
+		
+			return Carbon::createFromTimeStamp( $timestamp )->format( static::getDateTimeFormatForFiles() );
+
+		}
+
 		public function setCreatedAtFromFileName(){
 		
 			$createdAt = preg_replace('/_[^_]*$/', '', $this->fileName);

@@ -18,9 +18,9 @@
 			
 		}
 
-		public static function createNew(){
+		public static function createNew($fileName = false){
 
-			$dbBackupFile = parent::createNew();
+			$dbBackupFile = parent::createNew($fileName);
 
 			$dbBackupFile->save();
 

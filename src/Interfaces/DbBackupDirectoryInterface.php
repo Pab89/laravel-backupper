@@ -4,7 +4,7 @@
 
 	interface DbBackupDirectoryInterface{
 
-		public static function getBackupsToKeep();
+		public function getBackupsToKeep();
 
 		public function cleanUp();
 

@@ -12,7 +12,7 @@ class BackupDbCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'backup:db';
+    protected $signature = 'backup:db {--fileName=false}';
 
     /**
      * The console command description.
@@ -37,9 +37,18 @@ class BackupDbCommand extends Command
      * @return mixed
      */
     public function handle()
-    {
+    {   
+        $dbBackupFileName = $this->getFileName();
+        $dbBackupFile = DbBackupFile::createNew( $dbBackupFileName );
 
-        $dbBackupFile = DbBackupFile::createNew();
-        $this->info('DB backked up');
+        $this->info( $dbBackupFile->fileName." created, local: ".$dbBackupFile->existsInLocal().", cloud: ".$dbBackupFile->existsInCloud() );
+    }
+
+    public function getFileName(){
+    
+        return ( $this->option('fileName') != "false" ) ?
+                $this->option('fileName') :
+                false ;
+
     }
 }

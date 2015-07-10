@@ -4,7 +4,7 @@
 
 	interface BackupFileInterface{
 
-		public function getFileEnding();
+		public static function getFileEnding();
 
 		public function getFileNameWithPath();
 

@@ -24,8 +24,8 @@
 			
 		}
 
-		public static function getBackupsToKeep(){
-		
+		public function getBackupsToKeep(){
+			
 			return config('laravelBackupper.backupsToKeep');
 		
 		}
@@ -66,7 +66,7 @@
 
 		public function cleanUp(){
 		
-			$numberOfOldBackupsToDelete = $this->files->count() - static::getBackupsToKeep();
+			$numberOfOldBackupsToDelete = $this->files->count() - $this->getBackupsToKeep();
 			$backupsToDelete = $this->files->splice(0, $numberOfOldBackupsToDelete);
 
 			$backupsToDelete->each( function($backupFile){

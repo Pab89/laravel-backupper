@@ -8,7 +8,7 @@
             "email": "pb@brechmann.dk"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "league/flysystem-aws-s3-v3": "^1.0@dev"
     },

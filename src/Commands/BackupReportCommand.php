@@ -39,14 +39,20 @@ class BackupReportCommand extends Command
      */
     public function handle()
     {
-        
-        $recipiant = new \stdClass;
-        $recipiant->email = $this->argument('email');
-        $recipiant->name = $this->argument('name');
+        $recipiant = $this->getRecipiant();
         $backupReporter = app( BackupReporter::class , [ $recipiant ]);
         $backupReporter->sendBackupReport();
         
-        $this->info('Backup report send to '.$recipiant->email);
+        $this->info('Backup report send to '.$backupReporter->recipiant->email);
 
+    }
+
+    public function getRecipiant(){
+    
+        $recipiant = new \stdClass;
+        $recipiant->email = $this->argument('email');
+        $recipiant->name = $this->argument('name');
+        return $recipiant;
+    
     }
 }

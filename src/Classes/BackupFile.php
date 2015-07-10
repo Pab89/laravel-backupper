@@ -31,9 +31,21 @@
 		
 		}
 
-		public static function createNew(){
+		public static function getFileEnding(){
 		
-			return app( static::class );
+			return static::$fileEnding;
+		
+		}
+
+		public static function getFileNameFromTimestamp($timestamp){
+		
+			return static::getFormattedFromTimestampForFiles($timestamp).static::getFileEnding();
+		
+		}
+
+		public static function createNew($fileName = false){
+		
+			return app( static::class, compact('fileName') );
 		
 		}
 
@@ -84,12 +96,6 @@
 		***	Get Functions
 		**/
 
-		public function getFileEnding(){
-		
-			return static::$fileEnding;
-		
-		}
-
 		public function getFileNameWithPath(){
 		
 			return $this->enviroment->getPath().$this->getFileName();
@@ -122,7 +128,7 @@
 
 		public function getNewFileName(){
 
-			return static::getNowFormattedForFiles().$this->getFileEnding();
+			return static::getNowFormattedForFiles().static::getFileEnding();
 		
 		}
 
