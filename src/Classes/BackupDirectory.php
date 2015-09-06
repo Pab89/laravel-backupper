@@ -67,6 +67,7 @@
 		public function cleanUp(){
 		
 			$numberOfOldBackupsToDelete = $this->files->count() - $this->getBackupsToKeep();
+			$numberOfOldBackupsToDelete = ($numberOfOldBackupsToDelete < 0) ? 0 : $numberOfOldBackupsToDelete;
 			$backupsToDelete = $this->files->splice(0, $numberOfOldBackupsToDelete);
 
 			$backupsToDelete->each( function($backupFile){
