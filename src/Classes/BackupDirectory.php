@@ -15,7 +15,7 @@
 		public $files;
 		public $enviroment;
 
-		public $filesToIgnore = ['.','..','.gitignore'];
+		public $filesToIgnore = ['.','..','.gitignore','.DS_Store'];
 
 		public function __construct(BackupEnviromentInterface $enviroment){
 

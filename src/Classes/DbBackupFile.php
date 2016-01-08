@@ -10,7 +10,7 @@
 
 	class DbBackupFile extends BackupFile{
 
-		public static $fileEnding = '_dump.sql';
+		public static $fileEnding = '_dump.sql.gz';
 
 		public function __construct($fileName = false, DbBackupEnviromentInterface $enviroment){
 			
@@ -35,7 +35,7 @@
 			$dbUser = env('DB_USERNAME', 'forge');
 			$dbPassword = env('DB_PASSWORD', 'secret');
 		
-			return sprintf("mysqldump --user=%s --password=%s --host=%s %s > %s",$dbUser,$dbPassword,$dbHost,$dbName, $this->getFileNameWithFullPath());
+			return sprintf("mysqldump --user=%s --password=%s --host=%s %s > %s",$dbUser,$dbPassword,$dbHost,$dbName, $this->notCompressedFileName());
 		
 		}
 
@@ -50,8 +50,15 @@
 
 			exec($this->getMysqlDumpStatement());
 
+			exec('gzip -v '.$this->notCompressedFileName());
+
 		}
 
+		protected function notCompressedFileName(){
+
+			return str_replace('.gz','',$this->getFileNameWithFullPath());
+
+		}
 	}
 
 ?>
